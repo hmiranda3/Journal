@@ -10,13 +10,20 @@ import Foundation
 
 class EntryController {
     
+    private let entryKey = "entry"
+    
     static let sharedInstance = EntryController() //This is a singleton
     
     var entries = [Entry]()
     
+    init() {
+        loadFromPersistentStore()
+    }
+    
     
     func addEntry(entry: Entry) {
         entries.append(entry)
+        saveToPersistentStorage()
     }
     
     func removeEntry(entry: Entry){
@@ -24,6 +31,18 @@ class EntryController {
         return
         }
         entries.removeAtIndex(indexOfEntry)
+        saveToPersistentStorage()
+    }
+    
+    func saveToPersistentStorage() {
+        NSUserDefaults.standardUserDefaults().setObject(entries.map({$0.dictionaryCopy}), forKey: entryKey)
+    }
+    
+    func loadFromPersistentStore() {
+        guard let entryDictionary = NSUserDefaults.standardUserDefaults().objectForKey(entryKey) as? [[String: AnyObject]] else {
+            return
+        }
+        entries = entryDictionary.flatMap({Entry(dictionary: $0)})
     }
 
 }

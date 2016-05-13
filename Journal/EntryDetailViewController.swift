@@ -59,6 +59,7 @@ class EntryDetailViewController: UIViewController {
         entry.bodyText = bodyTextView.text ?? ""
         
         self.navigationController?.popToRootViewControllerAnimated(true)
+        EntryController.sharedInstance.saveToPersistentStorage()
     }
     
     
